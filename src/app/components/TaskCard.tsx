@@ -1,7 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Task } from "./types"
 
+type Task = {
+    id: string
+    name: string
+    description: string
+    priority: 'low' | 'medium' | 'high'
+    status: 'pending' | 'in-progress' | 'completed'
+}
 
 export default function TaskCard({ task }: { task: Task })
 {
@@ -23,18 +29,18 @@ export default function TaskCard({ task }: { task: Task })
     }
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle className="flex justify-between items-center">
+        <Card className="bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600">
+            <CardHeader className="p-4">
+                <CardTitle className="flex justify-between items-center text-gray-800 dark:text-gray-100 text-lg">
                     {capitalize(task.name)}
                     <div className="space-x-2">
-                        <Badge className={priorityColor[task.priority]}>{task.priority}</Badge>
-                        <Badge className={statusColor[task.status]}>{task.status}</Badge>
+                        <Badge className={`${priorityColor[task.priority]} text-white`}>{task.priority}</Badge>
+                        <Badge className={`${statusColor[task.status]} text-white`}>{task.status}</Badge>
                     </div>
                 </CardTitle>
             </CardHeader>
-            <CardContent>
-                <p className="capitalize">{task.description}</p>
+            <CardContent className="p-4 pt-0">
+                <p className="text-gray-600 dark:text-gray-300">{task.description}</p>
             </CardContent>
         </Card>
     )
