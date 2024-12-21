@@ -1,36 +1,66 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { Task } from './types'
 
+type Task = {
+    id: string
+    name: string
+    description: string
+    priority: 'low' | 'medium' | 'high'
+    status: 'pending' | 'in-progress' | 'completed'
+}
 
 type TodoFormProps = {
     onAddTask: (task: Task) => void
+    onUpdateTask: (task: Task) => void
+    editingTask: Task | null
 }
 
-export default function TodoForm({ onAddTask }: TodoFormProps)
+export default function TodoForm({ onAddTask, onUpdateTask, editingTask }: TodoFormProps)
 {
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
-    const [priority, setPriority] = useState('medium')
-    const [status, setStatus] = useState('pending')
+    const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium')
+    const [status, setStatus] = useState<'pending' | 'in-progress' | 'completed'>('pending')
+
+    useEffect(() =>
+    {
+        if (editingTask)
+        {
+            setName(editingTask.name)
+            setDescription(editingTask.description)
+            setPriority(editingTask.priority)
+            setStatus(editingTask.status)
+        }
+    }, [editingTask])
 
     const handleSubmit = (e: React.FormEvent) =>
     {
         e.preventDefault()
-        const newTask: Task = {
-            id: Date.now().toString(),
-            name,
-            description,
-            priority: priority as 'low' | 'medium' | 'high',
-            status: status as 'pending' | 'in-progress' | 'completed'
+        if (editingTask)
+        {
+            onUpdateTask({
+                id: editingTask.id,
+                name,
+                description,
+                priority,
+                status
+            })
+        } else
+        {
+            onAddTask({
+                id: Date.now().toString(),
+                name,
+                description,
+                priority,
+                status
+            })
         }
-        onAddTask(newTask)
         setName('')
         setDescription('')
         setPriority('medium')
@@ -63,7 +93,7 @@ export default function TodoForm({ onAddTask }: TodoFormProps)
             </div>
             <div className="space-y-2">
                 <Label htmlFor="priority" className="text-sm font-medium text-gray-700 dark:text-gray-300">Priority</Label>
-                <Select value={priority} onValueChange={setPriority}>
+                <Select value={priority} onValueChange={(value: 'low' | 'medium' | 'high') => setPriority(value)}>
                     <SelectTrigger id="priority" className="border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:ring-blue-500">
                         <SelectValue placeholder="Select priority" />
                     </SelectTrigger>
@@ -76,7 +106,7 @@ export default function TodoForm({ onAddTask }: TodoFormProps)
             </div>
             <div className="space-y-2">
                 <Label htmlFor="status" className="text-sm font-medium text-gray-700 dark:text-gray-300">Status</Label>
-                <Select value={status} onValueChange={setStatus}>
+                <Select value={status} onValueChange={(value: 'pending' | 'in-progress' | 'completed') => setStatus(value)}>
                     <SelectTrigger id="status" className="border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:ring-blue-500">
                         <SelectValue placeholder="Select status" />
                     </SelectTrigger>
@@ -88,7 +118,7 @@ export default function TodoForm({ onAddTask }: TodoFormProps)
                 </Select>
             </div>
             <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-700 dark:hover:bg-blue-800">
-                Add Task
+                {editingTask ? 'Update Task' : 'Add Task'}
             </Button>
         </form>
     )

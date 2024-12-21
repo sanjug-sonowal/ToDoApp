@@ -1,15 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Edit, Trash2 } from 'lucide-react'
+import { Task } from "./types"
 
-type Task = {
-    id: string
-    name: string
-    description: string
-    priority: 'low' | 'medium' | 'high'
-    status: 'pending' | 'in-progress' | 'completed'
+
+type TaskCardProps = {
+    task: Task
+    onEdit: (id: string) => void
+    onDelete: (id: string) => void
 }
 
-export default function TaskCard({ task }: { task: Task })
+export default function TaskCard({ task, onEdit, onDelete }: TaskCardProps)
 {
     const priorityColor = {
         low: 'bg-green-500',
@@ -33,9 +34,21 @@ export default function TaskCard({ task }: { task: Task })
             <CardHeader className="p-4">
                 <CardTitle className="flex justify-between items-center text-gray-800 dark:text-gray-100 text-lg">
                     {capitalize(task.name)}
-                    <div className="space-x-2">
+                    <div className="flex items-center space-x-2">
                         <Badge className={`${priorityColor[task.priority]} text-white`}>{task.priority}</Badge>
                         <Badge className={`${statusColor[task.status]} text-white`}>{task.status}</Badge>
+                        <button
+                            onClick={() => onEdit(task.id)}
+                            className="text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
+                        >
+                            <Edit size={18} />
+                        </button>
+                        <button
+                            onClick={() => onDelete(task.id)}
+                            className="text-gray-600 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
+                        >
+                            <Trash2 size={18} />
+                        </button>
                     </div>
                 </CardTitle>
             </CardHeader>
