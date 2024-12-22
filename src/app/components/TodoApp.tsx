@@ -8,6 +8,7 @@ import { Sun, Moon } from 'lucide-react'
 import { Separator } from "@/components/ui/separator"
 import TodoForm from './TodoForm'
 import TaskList from './TaskList'
+import { useClerk } from '@clerk/nextjs';
 
 type Task = {
     id: string
@@ -22,6 +23,7 @@ export default function TodoApp()
     const [tasks, setTasks] = useState<Task[]>([])
     const [darkMode, setDarkMode] = useState(false)
     const [editingTask, setEditingTask] = useState<Task | null>(null)
+    const { signOut } = useClerk();
 
     const addTask = (task: Task) =>
     {
@@ -59,9 +61,19 @@ export default function TodoApp()
         }
     }, [darkMode])
 
+    const handleSignOut = async () => {
+        try {
+          await signOut();
+          console.log('User signed out successfully');
+        } catch (error) {
+          console.error('Error signing out:', error);
+        }
+      };
+
     return (
         <Card className="w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
             <CardContent className="p-6">
+            <button onClick={handleSignOut}>Sign Out</button>
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center space-x-4">
                         <Avatar className="h-12 w-12">

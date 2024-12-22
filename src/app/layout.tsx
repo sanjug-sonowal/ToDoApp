@@ -13,19 +13,6 @@ import SignUp from "./signup/page";
 export default function RootLayout({}: Readonly<{
   children: React.ReactNode;
 }>) {
-  // return (
-  //   <ClerkProvider>
-  //     <html>
-  //     <body>
-  //       <div>
-  //         {/* <TodoApp /> */}
-  //       </div>
-  //     </body>
-
-  //   </html>
-  //   </ClerkProvider>
-  // );
-
   return (
     <ClerkProvider>
       <html lang="en">
